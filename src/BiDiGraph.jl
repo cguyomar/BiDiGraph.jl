@@ -2,6 +2,7 @@ module BiDiGraph
 
 using LightGraphs
 
+import Base:show
 
 import LightGraphs:
     _NI, AbstractGraph, AbstractEdge, AbstractEdgeIter,
@@ -16,7 +17,8 @@ import LightGraphs:
     AbstractGraphFormat, loadgraph, loadgraphs, savegraph,
 pagerank, induced_subgraph
 
-import Base:show
+import MetaGraphs:
+    AbstractMetaGraph, PropDict, MetaDict
 
 export SimpleBiDiGraph, inneighbors, add_edge!, has_edge,edges,vertices
 
