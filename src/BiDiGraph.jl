@@ -32,12 +32,11 @@ mutable struct SimpleBiDiGraph <: AbstractSimpleGraph{Int}
     ne::Int
     elist::Array{SimpleBiEdge}
     vlist::Array{Int}
-    #fadjlist::Vector{Vector{T}} # [src]: (dst, dst, dst)
-    #badjlist::Vector{Vector{T}} # [dst]: (src, src, src)
+    # Implemented as an edge list
+    # Todo : Think of a better implementation
     SimpleBiDiGraph(n,elist,vlist) = new(n,elist,vlist)
 end
 
-#function SimpleBiDiGraph(x) where U <: Real
 
 # Constructors
 function SimpleBiDiGraph(n::Integer=0)
@@ -47,8 +46,6 @@ function SimpleBiDiGraph(n::Integer=0)
     vlist = collect(1:n)
     return SimpleBiDiGraph(0, elist,vlist)
 end
-
-# SimpleBiDiGraph(n::Integer) where T <: Integer = SimpleBiDiGraph{T}(n)
 
 ne(g::SimpleBiDiGraph) = g.ne
 nv(g::SimpleBiDiGraph) = length(g.vlist)
@@ -86,8 +83,6 @@ function inneighbors(g::SimpleBiDiGraph,v::Int)
     return append!(f,b)
 end
 
-#outneighbors
-
 
 
 # Mutability methods
@@ -96,7 +91,6 @@ function add_vertex!(g::SimpleBiDiGraph)
     push!(g.vlist, length(g.vlist)+1)
     return true
 end
-
 
 function add_edge!(g::SimpleBiDiGraph, e::SimpleBiEdge)
     s, d = Tuple(e)
@@ -107,9 +101,5 @@ function add_edge!(g::SimpleBiDiGraph, e::SimpleBiEdge)
     g.ne += 1
     return true  # edge successfully added
 end
-
-
-
-
 
 end # module
