@@ -18,8 +18,7 @@ pagerank, induced_subgraph
 
 import Base:show
 
-export greet,
-    SimpleBiDiGraph
+export SimpleBiDiGraph, inneighbors, add_edge!, has_edge,edges,vertices
 
 
 include("./SimpleBiEdge.jl")
@@ -70,6 +69,25 @@ function has_edge(g::SimpleBiDiGraph, e::SimpleBiEdge)
     end
     return(false)
 end
+
+function outneighbors(g::SimpleBiDiGraph,v::Int)
+    outedges = filter(e -> e.src == v && e.indir == "+" ,edges(g))
+    f = [e.dst for e in outedges]
+    outedges = filter(e -> e.dst == v && e.indir == "-" ,edges(g))
+    b = [e.src for e in outedges]
+    return append!(f,b)
+end
+
+function inneighbors(g::SimpleBiDiGraph,v::Int)
+    outedges = filter(e -> e.dst == v && e.indir == "+" ,edges(g))
+    f = [e.src for e in outedges]
+    outedges = filter(e -> e.src == v && e.indir == "-" ,edges(g))
+    b = [e.dst for e in outedges]
+    return append!(f,b)
+end
+
+#outneighbors
+
 
 
 # Mutability methods
