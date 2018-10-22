@@ -25,7 +25,7 @@ function MetaBiDiGraph(x, weightfield::Symbol, defaultweight::Real)
 end
 
 MetaBiDiGraph(x) = MetaBiDiGraph(x, :weight, 1.0)
-
+weighttype(g::MetaBiDiGraph) = Real
 # Methods
 
 is_directed(::Type{MetaDiGraph}) = true

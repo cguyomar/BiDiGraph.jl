@@ -1,8 +1,9 @@
 module BiDiGraph
 
 using LightGraphs
+using MetaGraphs
 
-import Base:show
+import Base:show,eltype
 
 import LightGraphs:
     _NI, AbstractGraph, AbstractEdge, AbstractEdgeIter,
@@ -18,7 +19,7 @@ import LightGraphs:
 pagerank, induced_subgraph
 
 import MetaGraphs:
-    AbstractMetaGraph, PropDict, MetaDict
+    AbstractMetaGraph, PropDict, MetaDict, weighttype
 
 export SimpleBiDiGraph, inneighbors, add_edge!, has_edge,edges,vertices
 
@@ -55,6 +56,7 @@ vertices(g::SimpleBiDiGraph) = g.vlist
 edges(g::SimpleBiDiGraph) = g.elist
 edgetype(g::SimpleBiDiGraph) = SimpleBiEdge
 is_directed(g::SimpleBiDiGraph) = true
+eltype(g::SimpleBiDiGraph) = Int
 
 function show(io::IO, g::SimpleBiDiGraph)
     print(io, "{$(nv(g)), $(ne(g))} bidirected graph")
