@@ -21,7 +21,7 @@ pagerank, induced_subgraph
 import MetaGraphs:
     AbstractMetaGraph, PropDict, MetaDict, weighttype
 
-export SimpleBiDiGraph, inneighbors, add_edge!, has_edge,edges,vertices
+export SimpleBiDiGraph, inneighbors, outneighbors, add_edge!, has_edge,edges,vertices,MetaBiDiGraph
 
 
 include("./SimpleBiEdge.jl")
@@ -74,13 +74,13 @@ end
 function outneighbors(g::SimpleBiDiGraph,v::Int)
     outedges = filter(e -> e.src == v && e.indir == "+" ,edges(g))
     f = [e.dst for e in outedges]
-    outedges = filter(e -> e.dst == v && e.indir == "-" ,edges(g))
+    outedges = filter(e -> e.dst == v && e.outdir == "-" ,edges(g))
     b = [e.src for e in outedges]
     return append!(f,b)
 end
 
 function inneighbors(g::SimpleBiDiGraph,v::Int)
-    outedges = filter(e -> e.dst == v && e.indir == "+" ,edges(g))
+    outedges = filter(e -> e.dst == v && e.outdir == "+" ,edges(g))
     f = [e.src for e in outedges]
     outedges = filter(e -> e.src == v && e.indir == "-" ,edges(g))
     b = [e.dst for e in outedges]
@@ -105,5 +105,8 @@ function add_edge!(g::SimpleBiDiGraph, e::SimpleBiEdge)
     g.ne += 1
     return true  # edge successfully added
 end
+
+include("./metabidigraph.jl")
+
 
 end # module
