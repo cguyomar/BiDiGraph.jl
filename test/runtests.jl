@@ -23,6 +23,17 @@ e = SimpleBiEdge(1,3,"-","-")
 @test 3 in g.badjlist[1] && 1 in g.fadjlist[3]
 
 
-# Problem : not possible to add several edges with same start and end node but different strands
-# Solution : Change verification in add_edge by testing if e in edges(g)
-# -> define edges and implement comparison?
+
+## MetaGraphs
+
+mg = MetaBiDiGraph(3)
+
+add_vertex!(mg)
+
+e1 = SimpleBiEdge(1,2,"+","+")
+e2 = SimpleBiEdge(1,3,"-","+")
+e3 = SimpleBiEdge(2,4,"-","-")
+
+@test add_edge!(mg,e1)
+@test add_edge!(mg,e2)
+@test add_edge!(mg,e3)
