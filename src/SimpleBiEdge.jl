@@ -14,6 +14,15 @@ end
 indir(e::SimpleBiEdge) = e.indir
 outdir(e::SimpleBiEdge) = e.outdir
 
+function change_dir(e::SimpleBiEdge)
+    # Returns true if the two connected nodes are in different directions
+    if e.outdir == e.indir
+        return(false)
+    else
+        return(true)
+    end
+end
+
 # I/O
 show(io::IO, e::SimpleBiEdge) = print(io, "Edge $(e.src) ($(e.indir)) => $(e.dst) ($(e.outdir))")
 

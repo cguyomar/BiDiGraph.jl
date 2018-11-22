@@ -19,9 +19,9 @@ import LightGraphs:
 pagerank, induced_subgraph
 
 import MetaGraphs:
-    AbstractMetaGraph, PropDict, MetaDict, weighttype
+    AbstractMetaGraph, PropDict, MetaDict, weighttype, _hasdict,clear_props!,props,set_props!,set_prop!
 
-export SimpleBiDiGraph, inneighbors, outneighbors, add_edge!, has_edge,edges,vertices,MetaBiDiGraph
+export SimpleBiDiGraph, inneighbors, outneighbors, add_edge!, has_edge,edges,vertices,MetaBiDiGraph, nv, ne, props, rem_vertex!, list_edges, change_dir
 
 
 include("./SimpleBiEdge.jl")
@@ -64,7 +64,7 @@ end
 
 function has_edge(g::SimpleBiDiGraph, e::SimpleBiEdge)
     for E in edges(g)
-        if e==e
+        if E==e
             return(true)
         end
     end
@@ -87,6 +87,12 @@ function inneighbors(g::SimpleBiDiGraph,v::Int)
     return append!(f,b)
 end
 
+function list_edges(g::SimpleBiDiGraph,v1,v2)
+    # Return all edges connecting v1 and v2, regardless the directions
+    (v1 in vertices(g) && v2 in vertices(g)) || return(Array{SimpleBiEdge,1}())
+    return(filter(e -> e.dst in [v1,v2] && e.src in [v1,v2], edges(g)))
+end
+
 
 
 # Mutability methods
@@ -105,6 +111,58 @@ function add_edge!(g::SimpleBiDiGraph, e::SimpleBiEdge)
     g.ne += 1
     return true  # edge successfully added
 end
+
+function rem_edge!(g::SimpleBiDiGraph, e::SimpleBiEdge)
+    for (i,E) in enumerate(g.elist)
+        if e == E
+            deleteat!(g.elist,i)
+            g.ne -= 1
+            return(true)
+        end
+    end
+    return(false)
+end
+
+
+function rem_vertex!(g::SimpleBiDiGraph,v::Int)
+    # Kept LightGraph behavior : v is replaced by the last vertex
+    v in vertices(g) || return false
+    n = nv(g)
+    v_edges = copy(filter(e -> e.dst == v || e.src == v,g.elist))
+
+
+    for e in v_edges
+        rem_edge!(g,e)
+    end
+    n_inedges = copy(filter(e -> e.dst == n,g.elist))
+    n_outedges = copy(filter(e -> e.src == n,g.elist))
+
+    if v != n
+        # add the edges from n back to  v, and remove edges to/from n
+        for e in n_inedges
+            add_edge!(g,SimpleBiEdge(e.src,v,e.indir,e.outdir))
+            rem_edge!(g,e)
+        end
+        for e in n_outedges
+            add_edge!(g,SimpleBiEdge(v,e.dst,e.indir,e.outdir))
+            rem_edge!(g,e)
+        end
+    end
+    pop!(g.vlist)
+    return(true)
+end
+
+function change_dir(g::SimpleBiDiGraph,n1,n2)
+    es = list_edges(g,n1,n2)
+    @assert length(es)==1
+    if change_dir(es[1])
+        return(true)
+    else return(false)
+    end
+end
+
+
+
 
 include("./metabidigraph.jl")
 
